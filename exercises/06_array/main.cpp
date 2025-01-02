@@ -4,6 +4,7 @@
 
 unsigned long long arr[90]{0, 1};
 unsigned long long fibonacci(int i) {
+
     switch (i) {
         case 0:
             return 0;
@@ -11,13 +12,16 @@ unsigned long long fibonacci(int i) {
             return 1;
         default:
             // TODO: 补全三目表达式缺失的部分
-            return <condition> ? <cache> : (arr[i] = fibonacci(i - 1) + fibonacci(i - 2));
+            return i < 90 ? arr[i] : fibonacci(i - 1) + fibonacci(i - 2);
     }
 }
 
 int main(int argc, char **argv) {
+    for (int i = 2; i < 90; i++) {
+        arr[i] = arr[i - 1] + arr[i - 2];
+    }
     // TODO: 为此 ASSERT 填写正确的值
-    ASSERT(sizeof(arr) == ?, "sizeof array is size of all its elements");
+    ASSERT(sizeof(arr) == 90 * sizeof(unsigned long long), "sizeof array is size of all its elements");
     // ---- 不要修改以下代码 ----
     ASSERT(fibonacci(2) == 1, "fibonacci(2) should be 1");
     ASSERT(fibonacci(20) == 6765, "fibonacci(20) should be 6765");
