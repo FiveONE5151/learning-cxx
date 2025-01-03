@@ -1,4 +1,7 @@
 #include "../exercise.h"
+#include <cstddef>
+#include <cstring>
+#include <iostream>
 
 // READ: 左值右值（概念）<https://learn.microsoft.com/zh-cn/cpp/c-language/l-value-and-r-value-expressions?view=msvc-170>
 // READ: 左值右值（细节）<https://zh.cppreference.com/w/cpp/language/value_category>
@@ -15,21 +18,54 @@ class DynFibonacci {
 
 public:
     // TODO: 实现动态设置容量的构造器
-    DynFibonacci(int capacity): cache(new ?), cached(?) {}
+    DynFibonacci(int capacity) : cache(new size_t[capacity]{0, 1}), cached(2) { std::cout << "Constructor called\n"; }
 
     // TODO: 实现移动构造器
-    DynFibonacci(DynFibonacci &&) noexcept = delete;
+    DynFibonacci(DynFibonacci &&source) noexcept {
+        std::cout << "Move constructor called\n";
+        //初始化自身对象
+        cache = source.cache;
+        cached = source.cached;
+        //将被移动对象的资源设置为一个合法的状态，一般指针为空其他值自定
+        source.cache = nullptr;
+        source.cached = 0;
+    }
 
     // TODO: 实现移动赋值
     // NOTICE: ⚠ 注意移动到自身问题 ⚠
-    DynFibonacci &operator=(DynFibonacci &&) noexcept = delete;
+    DynFibonacci &operator=(DynFibonacci &&source) noexcept {
+        if (this != &source) {
+            std::cout << "Move assignment called\n";
+            //！！释放原本持有的资源！！
+            delete[] cache;
+            //获取source资源
+            cache = source.cache;
+            cached = source.cached;
+            //设置source资源为合法状态
+            source.cache = nullptr;
+            source.cached = 0;
+        } else {
+            //警报：移动到自身，但什么也不做直接返回自身
+            std::cerr << "self-assignment detected\n";
+        }
+        //返回自身
+        return *this;
+    }
 
     // TODO: 实现析构器，释放缓存空间
-    ~DynFibonacci();
-
+    ~DynFibonacci() {
+        std::cout << "Destructor called\n";
+        delete[] cache;
+    }
+    DynFibonacci(DynFibonacci const &others)
+        : cache(new size_t[others.cached]),
+          cached(others.cached) {
+        std::cout << "Copy constructor called" << std::endl;
+        std::memcpy(cache, others.cache, cached * sizeof(size_t));
+    }
     // TODO: 实现正确的缓存优化斐波那契计算
     size_t operator[](int i) {
-        for (; false; ++cached) {
+        for (; cached < i + 1; ++cached) {
             cache[cached] = cache[cached - 1] + cache[cached - 2];
         }
         return cache[i];
@@ -48,9 +84,11 @@ public:
 };
 
 int main(int argc, char **argv) {
+
     DynFibonacci fib(12);
     ASSERT(fib[10] == 55, "fibonacci(10) should be 55");
 
+    //move constructor
     DynFibonacci const fib_ = std::move(fib);
     ASSERT(!fib.is_alive(), "Object moved");
     ASSERT(fib_[10] == 55, "fibonacci(10) should be 55");
