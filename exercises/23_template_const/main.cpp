@@ -53,7 +53,7 @@ private:
 int main(int argc, char **argv) {
     {
         unsigned int shape[]{2, 3, 4, 5};
-        auto tensor = Tensor<4, int>(shape);
+        Tensor<4, int> tensor(shape);
 
         unsigned int i0[]{0, 0, 0, 0};
         tensor[i0] = 1;
@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
     }
     {
         unsigned int shape[]{7, 8, 128};
-        auto tensor = Tensor<3, float>(shape);
+        Tensor<3, float> tensor(shape);
 
         unsigned int i0[]{0, 0, 0};
         tensor[i0] = 1.f;
