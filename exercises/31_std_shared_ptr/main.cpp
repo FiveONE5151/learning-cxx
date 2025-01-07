@@ -33,10 +33,10 @@ int main(int argc, char **argv) {
     std::cout << observer.use_count() << std::endl;
     ASSERT(observer.use_count() == 3, "");
 
-    std::ignore = std::move(ptrs[0]);//-1
+    std::ignore = std::move(ptrs[0]);//不会-1,ptrs0依然持有原来的对象
     ptrs[1] = std::move(ptrs[1]);    //
     ptrs[1] = std::move(ptrs[2]);    //-1
-    std::cout << observer.use_count() << std::endl;
+    std::cout << "?? " << *ptrs[0] << std::endl;
     ASSERT(observer.use_count() == 2, "");//为什么不是1?
 
     shared = observer.lock();

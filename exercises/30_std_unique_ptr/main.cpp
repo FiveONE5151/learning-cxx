@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
     }
     std::cout << std::endl;
     forward(drop(reset(forward(forward(reset(nullptr))))));
-    problems[1] = std::move(RECORDS);//d ffr 
+    problems[1] = std::move(RECORDS);//d ffr
     std::cout << "problem1: ";
     for (auto c : problems[1]) {
         std::cout << c << " ";
